@@ -3,13 +3,16 @@ import './App.css';
 
 
 class App extends Component {
-  constructor(){
-    super();
+  constructor(props){
+    super(props);
     this.state = {data: null};
     this.getData()
-    this.getauth_articles = this.getauth_articles.bind(this);
+    this.getAuthArticles = this.getAuthArticles.bind(this);
 }
-
+/*this function gets data from the api related to one of the mentioned topic 'therapy'
+the function then pareses the xml and stores the data in a variable
+it runs a for loop inside the entry tag to fetch all the titles and displays it on the screen
+these titles are made clickable that calls the function handleChange */
 getData() {
   fetch(`http://export.arxiv.org/api/query?search_query=ti:${'therapy'}&sortBy=lastUpdatedDate&sortOrder=ascending`)
   .then(data=>data.text()).then(str => (new window.DOMParser()).parseFromString(str, "text/xml"))
@@ -25,6 +28,7 @@ getData() {
       this.setState({data: elems});
     })
 }
+/*  */
 handleChange(evt) {
   console.log(evt.target.id)
   var res = evt.target.id.split("/");
@@ -33,16 +37,16 @@ handleChange(evt) {
   .then(data=>data.text()).then(str => (new window.DOMParser()).parseFromString(str, "text/xml"))
     .then(data => {
       var summ = data.getElementsByTagName("summary");
-      var auth = data.getElementsByTagName("author");
+      let auth = data.getElementsByTagName("author");
       let elems1 = [];
       let name = []
-      console.log(auth.length)
+      console.log(auth)
       for (let i = 0; i < auth.length; i++ ){
-        console.log(auth[i].textContent)
-        // let elem1 = <div key={i} id={auth[i].textContent} onClick={this.getauth_articles}>{auth[i].textContent}</div>;
-        // elems1.push(elem1);
+        console.log(auth[i].textContent);
+        // let elem1 = <div key={i} id={auth[i].getElementsByTagName("id")[0].textContent} onClick={this.getAuthArticles}>{auth[i].getElementsByTagName("author")[0].textContent}</div>;
         name += auth[i].textContent;
-        // console.log(elem)
+        // elems1.push(elem1);
+        // console.log(elem1)
       
       }
       document.getElementById("demo").innerHTML = summ[0].textContent + name;
@@ -51,20 +55,21 @@ handleChange(evt) {
 
     })
   }
-  getauth_articles(evt) {
-    console.log(evt)
-    // fetch(`https://arxiv.org/search/q-bio?searchtype=author&query=`)
-    // .then(data=> data.text()).then(str => (new window.DOMParser()).parseFromString(str, "text/xml"))
-    //   .then(data => {
-    //     var arti = data.getElementsByTagName("author");
-    //     let titles = []
-    //     for(let i=0;i<arti.length;i++){
-    //       let elem = <div key={i} id={arti[i].getElementsByTagName("id")[0].textContent} onClick={this.handleChange}>{arti[i].getElementsByTagName("author")[0].textContent}</div>;
-    //       titles.push(elem);
-    //     }
-    //     console.log(titles)
+  getAuthArticles(evt) {
+    console.log(evt.target.id)
+    let auth_name = evt;
+    fetch(`http://export.arxiv.org/api/query?search_query=${auth_name}`)
+    .then(data=> data.text()).then(str => (new window.DOMParser()).parseFromString(str, "text/xml"))
+      .then(data => {
+        var arti = data.getElementsByTagName("title");
+        let titles = []
+        for(let i=0;i<arti.length;i++){
+          let elem = <div key={i} id={arti[i].getElementsByTagName("id")[0].textContent}>{arti[i].getElementsByTagName("title")[0].textContent}</div>;
+          titles.push(elem);
+        }
+        console.log(titles)
 
-    // })
+    })
   }
   
 
