@@ -1,46 +1,58 @@
 import React, { Component } from 'react';
 import './App.css';
-import { format } from 'path';
-// import $ from 'jquery';
-// import XmlToJson from './components/XmlToJson' 
+
 
 class App extends Component {
   constructor(){
     super();
-    
-  fetch(`http://export.arxiv.org/api/query?search_query=ti:${'therapy'}&sortBy=lastUpdatedDate&sortOrder=ascending`).then((data)=>{
-  console.log(data);
-  return data.text()
-  }).then(str => (new window.DOMParser()).parseFromString(str, "text/xml"))
-  .then(data => {
-    // changes xml to json
-    // var convert = require('xml-js');
-    // var xml = require('fs').readFileSync(data, 'utf8');
-    // var result = convert.xml2json(xml, {compact: true, spaces: 4});
-    console.log(data);
-    var title = data.getElementsByTagName("title");
-    var summary = data.getElementsByTagName("summary");
-
-    var txt;
-    for (var i = 1; i < title.length; i++){
-      txt += "<a href="+i+" id ="+title[i].childNodes[0].nodeValue + " onClick={this.handleChange}>"+ title[i].childNodes[0].nodeValue + "</a><br>";
-    }
-    document.getElementById("demo").innerHTML = txt;
-    
-    // var json = XmlToJson.xmlToJson(data)
-    // console.log(json);
-  })
+    this.state = {data: null};
+    this.getData()
 }
-handleChange() {
-  // var x = document.getElementById("demo").text
-  console.log("helo")
+
+getData(){
+  fetch(`http://export.arxiv.org/api/query?search_query=ti:${'therapy'}&sortBy=lastUpdatedDate&sortOrder=ascending`)
+  .then(data=>data.text()).then(str => (new window.DOMParser()).parseFromString(str, "text/xml"))
+    .then(data => {
+      var entry = data.getElementsByTagName("entry");
+      let elems = []
+      for(let i=0;i<entry.length;i++){
+        // console.log(entry[i].getElementsByTagName("id")[0].textContent)
+        let elem = <div key={i} id={entry[i].getElementsByTagName("id")[0].textContent} onClick={this.handleChange}>{entry[i].getElementsByTagName("title")[0].textContent}</div>;
+        elems.push(elem);
+      }
+      console.log(elems)
+      this.setState({data: elems});
+    })
+}
+handleChange(evt) {
+  console.log(evt.target.id)
+  var res = evt.target.id.split("/");
+  var id = res[5]
+  fetch(`http://export.arxiv.org/api/query?id_list=${res[4]}/${id}`)
+  .then(data=>data.text()).then(str => (new window.DOMParser()).parseFromString(str, "text/xml"))
+    .then(data => {
+      var summ = data.getElementsByTagName("summary");
+      var auth = data.getElementsByTagName("author");
+      let elems;
+      let name = []
+      console.log(auth.length)
+      for (var i = 0; i < auth.length; i++ ){
+        console.log(auth[i].textContent)
+        name += auth[i].textContent;
+      }
+      document.getElementById("demo").innerHTML = summ[0].textContent + name;
+      
+      // window.history.pushState({}, "page 2", "bar.html");
+    })
+  
 }
 
   render() {
+    let data = this.state.data;
     return (
      
       <div id = "demo">
-        {/* <a id = "demo" href = "#" onClick= {this.handleChange}> </a> */}
+        {data}
       </div>
       
     );
