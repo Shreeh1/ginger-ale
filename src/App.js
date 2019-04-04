@@ -19,9 +19,11 @@ class App extends Component {
     // var result = convert.xml2json(xml, {compact: true, spaces: 4});
     console.log(data);
     var title = data.getElementsByTagName("title");
+    var summary = data.getElementsByTagName("summary");
+
     var txt;
     for (var i = 1; i < title.length; i++){
-      txt += title[i].childNodes[0].nodeValue + "<br>";
+      txt += "<a href="+i+" id ="+title[i].childNodes[0].nodeValue + " onClick={this.handleChange}>"+ title[i].childNodes[0].nodeValue + "</a><br>";
     }
     document.getElementById("demo").innerHTML = txt;
     
@@ -30,15 +32,17 @@ class App extends Component {
   })
 }
 handleChange() {
-  var x = document.getElementById("demo").text
-  console.log(x)
+  // var x = document.getElementById("demo").text
+  console.log("helo")
 }
 
   render() {
     return (
-      <div>
-        <a id = "demo" href = "#" onClick= {this.handleChange}> </a>
+     
+      <div id = "demo">
+        {/* <a id = "demo" href = "#" onClick= {this.handleChange}> </a> */}
       </div>
+      
     );
   }
 }
