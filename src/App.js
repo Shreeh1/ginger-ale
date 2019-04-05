@@ -28,7 +28,9 @@ getData() {
       this.setState({data: elems});
     })
 }
-/*  */
+/* This function fetches data based on the article clicked 
+It checks the end point and the split command split the retrieved end point to match the query
+This collects the summary and author names of that title*/
 handleChange(evt) {
   console.log(evt.target.id)
   var res = evt.target.id.split("/");
@@ -38,24 +40,29 @@ handleChange(evt) {
     .then(data => {
       var summ = data.getElementsByTagName("summary");
       let auth = data.getElementsByTagName("author");
-      let elems1 = [];
+
       let name = [];
+      let elem1 = []
       console.log(auth)
       
       for (let i = 0; i < auth.length; i++ ){
         console.log(auth[i].textContent);
         console.log(auth[i].getElementsByTagName("id"));
+        /* Here I was tring to implement the same onClick type so when clicked on the author it displayed all the articles 
+        specific to that author in that topic*/
         // let elem1 = <div key={i} id={auth[i].textContent} onClick={this.getAuthArticles.bind(this)}>{auth[i].textContent}</div>;
         name += auth[i].textContent;
         // elems1.push(elem1);
         // console.log(elem1)
       }
-      document.getElementById("demo").innerHTML = summ[0].textContent + name;
+      document.getElementById("demo").innerHTML = summ[0].textContent + name; 
       // window.history.pushState({}, "page 2", "bar.html");
       // this.setState({data: elems1});
 
     })
   }
+  /* This function is used to retrieve the article titles specific an author clicked in the previous page
+  */
   getAuthArticles(evt) {
     console.log(evt.target.id)
     let auth_name = evt;
@@ -74,7 +81,7 @@ handleChange(evt) {
   }
   
 
-
+  
   render() {
     let data = this.state.data;
     return (
