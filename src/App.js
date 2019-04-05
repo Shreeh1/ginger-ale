@@ -39,15 +39,16 @@ handleChange(evt) {
       var summ = data.getElementsByTagName("summary");
       let auth = data.getElementsByTagName("author");
       let elems1 = [];
-      let name = []
+      let name = [];
       console.log(auth)
+      
       for (let i = 0; i < auth.length; i++ ){
         console.log(auth[i].textContent);
-        // let elem1 = <div key={i} id={auth[i].getElementsByTagName("id")[0].textContent} onClick={this.getAuthArticles}>{auth[i].getElementsByTagName("author")[0].textContent}</div>;
+        console.log(auth[i].getElementsByTagName("id"));
+        // let elem1 = <div key={i} id={auth[i].textContent} onClick={this.getAuthArticles.bind(this)}>{auth[i].textContent}</div>;
         name += auth[i].textContent;
         // elems1.push(elem1);
         // console.log(elem1)
-      
       }
       document.getElementById("demo").innerHTML = summ[0].textContent + name;
       // window.history.pushState({}, "page 2", "bar.html");
@@ -79,7 +80,7 @@ handleChange(evt) {
     return (
      
       <div id = "demo">
-        {data}
+        <h6>{data}</h6>
       </div>
       
     );
